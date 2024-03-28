@@ -8,9 +8,18 @@ import Section from "../../components/Section.astro";
   <PageHeader>Head /give</PageHeader>
   <main>
     <Section title="Description">
-      This project was an idea by @noxon on <a href="http://discord.gg/5y5FBz5">
-        Dataworld
-      </a>
+      <span>
+        This project was an idea by @noxon on
+        <a href="http://discord.gg/5y5FBz5">Dataworld</a> and I used some of his
+        code to build this project.
+      </span>
+      <details>
+        <summary>How it works</summary>
+        First request, the uuid from the playername, then request the textures, decode
+        it from base 64, format it to be an object as followed: {
+          '{"textures":{"SKIN":{"url":"<decoded skin url>"}}}'
+        }, reencode it to base 64
+      </details>
     </Section>
 
     <Section title="Generator">
@@ -20,10 +29,16 @@ import Section from "../../components/Section.astro";
         hx-swap="innerHTML"
       >
         <label>Username</label>: <input name="username" />
-        <button>Submit</button>
+        <button>/give head</button>
       </form>
       <br />
       <div id="output"></div>
     </Section>
   </main>
 </GlobalLayout>
+
+<style>
+  #output {
+    display: block;
+  }
+</style>
