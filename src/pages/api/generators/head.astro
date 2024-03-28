@@ -66,15 +66,17 @@ const texturesBase64 = (await fetchSkin.json())["properties"][0]["value"];
 
 const textures = JSON.parse(atob(texturesBase64));
 const skinURL = textures["textures"]["SKIN"]["url"];
+const value = '{"textures":{"SKIN":{"url":"' + skinURL + '"}}}';
+const valueBase64 = btoa(value);
 
-const giveCommand = `give @p player_head{SkullOwner:{Id:[I;${uuidList.join(",")}],Properties:{textures:[{Value:"${texturesBase64}"}]}}}`;
+const giveCommand = `give @p player_head{SkullOwner:{Id:[I;${uuidList.join(",")}],Properties:{textures:[{Value:"${valueBase64}"}]}}}`;
 ---
 
 <label>Skin URL:</label>
 <code id="url"><a href={skinURL} target="_blank">{skinURL}</a></code>
 <img src={skinURL} alt="skin texture" />
 <label>Value:</label>
-<code id="value">{texturesBase64}</code>
+<code id="value">{valueBase64}</code>
 <label>/give command:</label>
 <code id="give">{giveCommand}</code>
 <button
