@@ -1,0 +1,93 @@
+---
+if (Astro.request.method !== "POST") {
+  return new Response(null, {
+    status: 405,
+    statusText: "Method Not Allowed",
+  });
+}
+const data = await Astro.request.formData();
+
+if (!data.has("username")) {
+  return new Response(null, {
+    status: 400,
+    statusText: "Bad Request",
+  });
+}
+
+const fetchUUID = await fetch(
+  "https://api.mojang.com/users/profiles/minecraft/" +
+    data.get("username")?.valueOf(),
+  {
+    method: "GET",
+  },
+).catch(() => {
+  return new Response(null, {
+    status: 404,
+    statusText: "Not Found",
+  });
+});
+
+if (fetchUUID.status !== 200) {
+  return new Response(null, {
+    status: fetchUUID.status,
+    statusText: fetchUUID.statusText,
+  });
+}
+
+const uuid = (await fetchUUID.json())["id"];
+
+const fetchSkin = await fetch(
+  "https://sessionserver.mojang.com/session/minecraft/profile/" + uuid,
+  {
+    method: "GET",
+  },
+).catch(() => {
+  return new Response(null, {
+    status: 500,
+    statusText: "Server error",
+  });
+});
+
+if (fetchSkin.status !== 200) {
+  return new Response(null, {
+    status: fetchSkin.status,
+    statusText: fetchSkin.statusText,
+  });
+}
+
+const texturesBase64 = (await fetchSkin.json())["properties"][0]["value"];
+
+const textures = JSON.parse(atob(texturesBase64));
+const skinURL = textures["textures"]["SKIN"]["url"];
+
+const value = '{"textures":{"SKIN":{"url":"' + skinURL + '"}}}';
+const valueBase64 = btoa(value);
+
+const giveCommand = `give @p player_head{SkullOwner:{Id:[I;16,11,1,0],Properties:{textures:[{Value:"${valueBase64}"}]}}}`;
+---
+
+<label>Skin URL:</label>
+<a href={skinURL} target="_blank">{skinURL}</a>
+<br />
+<label>Value:</label>
+<textarea id="value" readonly contenteditable="true">{valueBase64}</textarea>
+<br />
+<label>/give command:</label>
+<textarea id="give" readonly contenteditable="true">{giveCommand}</textarea>
+<button
+  onclick="navigator.clipboard.writeText(document.querySelector('#give').value)"
+>
+  copy
+</button>
+
+<style is:global>
+  textarea {
+    width: 100%;
+    height: auto;
+    min-height: 2rem;
+    overflow-wrap: break-word;
+  }
+  #give {
+    min-height: 4rem;
+  }
+</style>

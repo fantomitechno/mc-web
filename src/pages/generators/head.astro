@@ -1,0 +1,29 @@
+---
+import GlobalLayout from "../../layouts/GlobalLayout.astro";
+import PageHeader from "../../components/PageHeader.astro";
+import Section from "../../components/Section.astro";
+---
+
+<GlobalLayout title="fantomitechno mc projects">
+  <PageHeader>Head /give</PageHeader>
+  <main>
+    <Section title="Description">
+      This project was an idea by @noxon on <a href="http://discord.gg/5y5FBz5">
+        Dataworld
+      </a>
+    </Section>
+
+    <Section title="Generator">
+      <form
+        hx-post={`/api/generators/head`}
+        hx-target="#output"
+        hx-swap="innerHTML"
+      >
+        <label>Username</label>: <input name="username" />
+        <button>Submit</button>
+      </form>
+      <br />
+      <div id="output"></div>
+    </Section>
+  </main>
+</GlobalLayout>
