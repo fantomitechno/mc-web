@@ -1,4 +1,5 @@
 ---
+import { SkinView3d } from "vue-skinview3d";
 if (Astro.request.method !== "POST") {
   return new Response(null, {
     status: 405,
@@ -74,7 +75,8 @@ const giveCommand = `give @p player_head{SkullOwner:{Id:[I;${uuidList.join(",")}
 
 <label>Skin URL:</label>
 <code id="url"><a href={skinURL} target="_blank">{skinURL}</a></code>
-<img src={skinURL} alt="skin texture" />
+<!--<img src={skinURL} alt="skin texture" />-->
+<SkinView3d width={300} height={400} skinUrl={skinURL} />
 <label>Value:</label>
 <code id="value">{valueBase64}</code>
 <label>/give command:</label>

@@ -16,5 +16,10 @@
     "astro": "^4.3.5",
     "sharp": "^0.33.2",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "@astrojs/vue": "^4.0.9",
+    "vue": "^3.4.21",
+    "vue-skinview3d": "^0.3.1"
   }
 }
