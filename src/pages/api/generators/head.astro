@@ -1,5 +1,4 @@
 ---
-import { SkinView3d } from "vue-skinview3d";
 if (Astro.request.method !== "POST") {
   return new Response(null, {
     status: 405,
@@ -66,7 +65,7 @@ const uuidList = [
 const texturesBase64 = (await fetchSkin.json())["properties"][0]["value"];
 
 const textures = JSON.parse(atob(texturesBase64));
-const skinURL = textures["textures"]["SKIN"]["url"];
+const skinURL: string = textures["textures"]["SKIN"]["url"];
 const value = '{"textures":{"SKIN":{"url":"' + skinURL + '"}}}';
 const valueBase64 = btoa(value);
 
@@ -74,21 +73,51 @@ const giveCommand = `give @p player_head{SkullOwner:{Id:[I;${uuidList.join(",")}
 ---
 
 <label>Skin URL:</label>
-<code id="url"><a href={skinURL} target="_blank">{skinURL}</a></code>
-<!--<img src={skinURL} alt="skin texture" />-->
-<SkinView3d width={300} height={400} skinUrl={skinURL} />
+<code class="output" id="url"
+  ><a href={skinURL} target="_blank">{skinURL}</a></code
+>
 <label>Value:</label>
-<code id="value">{valueBase64}</code>
+<code class="output" id="value">{valueBase64}</code>
 <label>/give command:</label>
-<code id="give">{giveCommand}</code>
+<code class="output" id="give">{giveCommand}</code>
 <button
   onclick="navigator.clipboard.writeText(document.querySelector('#give').innerHTML)"
 >
   copy
 </button>
+<label id="preview">Preview:</label>
+<div id="canvas_container">
+  <canvas id="skin_container" data-skin={skinURL}></canvas>
+</div>
+
+<script>
+  import { SkinViewer } from "skinview3d";
+
+  const canvas = document.getElementById("skin_container") as
+    | HTMLCanvasElement
+    | undefined;
+  if (canvas) {
+    const skinURL = canvas.dataset.skin ?? "";
+    const skinviewer = new SkinViewer({
+      canvas,
+      width: 300,
+      height: 400,
+      skin: skinURL,
+    });
+
+    skinviewer.controls.enableZoom = false;
+    skinviewer.playerObject.cape.visible = false;
+    skinviewer.playerObject.skin.body.visible = false;
+    skinviewer.playerObject.skin.head.visible = true;
+    skinviewer.playerObject.skin.leftArm.visible = false;
+    skinviewer.playerObject.skin.leftLeg.visible = false;
+    skinviewer.playerObject.skin.rightArm.visible = false;
+    skinviewer.playerObject.skin.rightLeg.visible = false;
+  }
+</script>
 
 <style is:global>
-  code {
+  .output {
     width: 100%;
     resize: none;
     height: fit-content;
@@ -96,11 +125,26 @@ const giveCommand = `give @p player_head{SkullOwner:{Id:[I;${uuidList.join(",")}
     margin: 0.5rem 0;
     padding: 0.2rem;
     border: 1px solid #ccc;
+    border-radius: 0.25rem;
     word-break: break-all;
   }
 
   #url {
     word-break: break-word;
     border: none;
+  }
+
+  #preview {
+    padding-top: 1rem;
+    display: block;
+  }
+
+  #canvas_container {
+    margin: 1rem 0;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    height: 20rem;
+    display: flex;
+    justify-content: center;
   }
 </style>

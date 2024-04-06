@@ -16,9 +16,9 @@ import Section from "../../components/Section.astro";
       <details>
         <summary>How it works</summary>
         First request, the uuid from the playername, then request the textures, decode
-        it from base 64, format it to be an object as followed: {
-          '{"textures":{"SKIN":{"url":"<decoded skin url>"}}}'
-        }, reencode it to base 64 and format it in a beautiful <b>give</b> command
+        it from base 64, format it to be an object as followed: <code
+          >{'{"textures":{"SKIN":{"url":"<decoded skin url>"}}}'}</code
+        > reencode it to base 64 and format it in a beautiful <b>give</b> command
       </details>
     </Section>
 
@@ -40,5 +40,11 @@ import Section from "../../components/Section.astro";
 <style>
   #output {
     display: block;
+  }
+
+  code {
+    padding: 0 0.2rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
   }
 </style>
